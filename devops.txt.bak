@@ -15,14 +15,3 @@ $ git remote add origin https://github.com/AzizMejbriTN99/mern_project.git
 $ git branch -M main
 
 $ git push -u origin main
-
-
-make dockerfiles
-make docker-compose
-
-install jenkins
-install trivy
-
-make jenkinsfile on MERN root
-
-
