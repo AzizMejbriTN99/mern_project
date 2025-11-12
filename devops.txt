@@ -1,3 +1,17 @@
 docker run -d -p 27017:27017 --name mongo mongo:latest // CREATE MONGODB IN DOCKER
 
 docker exec -it MongoDB mongosh // connect console to the container to access DB data => show dbs / use DBNAME / show collections / db.entity.find().pretty()
+
+
+git init
+Initialized empty Git repository in C:/Users/mohamedaziz.mejbri/Desktop/MERN/.git/
+
+ git add .
+
+$ git commit -m "Initial commit of MERN project"
+
+$ git remote add origin https://github.com/AzizMejbriTN99/mern_project.git
+
+$ git branch -M main
+
+$ git push -u origin main
