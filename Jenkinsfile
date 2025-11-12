@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKERHUB_CREDENTIALS = 'dockerhub_credentials'
+        DOCKERHUB_CREDENTIALS = '1a247a59-ccdd-4f03-b31c-eddcf5036cd2'
         BACKEND_IMAGE = "mern-backend"
         FRONTEND_IMAGE = "mern-frontend"
     }
