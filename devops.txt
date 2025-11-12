@@ -1,0 +1,3 @@
+docker run -d -p 27017:27017 --name mongo mongo:latest // CREATE MONGODB IN DOCKER
+
+docker exec -it MongoDB mongosh // connect console to the container to access DB data => show dbs / use DBNAME / show collections / db.entity.find().pretty()
