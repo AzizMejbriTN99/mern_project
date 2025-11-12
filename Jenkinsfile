@@ -39,10 +39,10 @@ pipeline {
         stage('Push Images to Docker Hub') {
             steps {
                 withCredentials([usernamePassword(
-                    credentialsId: '%DOCKERHUB_CREDENTIALS%',
-                    usernameVariable: 'USER',
-                    passwordVariable: 'PASS'
-                )]) {
+    credentialsId: '1a247a59-ccdd-4f03-b31c-eddcf5036cd2', // <- no % or variable
+    usernameVariable: 'USER',
+    passwordVariable: 'PASS'
+)]) {
                     // Login to Docker Hub
                     bat "docker login -u %USER% -p %PASS%"
 
