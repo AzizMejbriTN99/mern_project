@@ -3,11 +3,18 @@ pipeline {
 
     environment {
         DOCKERHUB_CREDENTIALS = '1a247a59-ccdd-4f03-b31c-eddcf5036cd2'
+        DOCKERHUB_USERNAME = 'medazizmejbri'
         BACKEND_IMAGE = "mern-backend"
         FRONTEND_IMAGE = "mern-frontend"
     }
 
     stages {
+
+        stage('Checkout SCM') {
+            steps {
+                checkout scm
+            }
+        }
 
         stage('Build Backend Docker Image') {
             steps {
@@ -28,8 +35,9 @@ pipeline {
         stage('Scan Images with Trivy') {
             steps {
                 script {
-                    bat "trivy image ${BACKEND_IMAGE}:latest"
-                    bat "trivy image ${FRONTEND_IMAGE}:latest"
+                    // Windows: run Trivy via Docker
+                    bat "docker run --rm -v //var/run/docker.sock:/var/run/docker.sock aquasec/trivy image ${BACKEND_IMAGE}:latest"
+                    bat "docker run --rm -v //var/run/docker.sock:/var/run/docker.sock aquasec/trivy image ${FRONTEND_IMAGE}:latest"
                 }
             }
         }
@@ -38,8 +46,9 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry('https://index.docker.io/v1/', "${DOCKERHUB_CREDENTIALS}") {
-                        docker.image("${BACKEND_IMAGE}:latest").push()
-                        docker.image("${FRONTEND_IMAGE}:latest").push()
+                        // tag images with your Docker Hub username
+                        docker.image("${BACKEND_IMAGE}:latest").tag("${DOCKERHUB_USERNAME}/${BACKEND_IMAGE}:latest").push()
+                        docker.image("${FRONTEND_IMAGE}:latest").tag("${DOCKERHUB_USERNAME}/${FRONTEND_IMAGE}:latest").push()
                     }
                 }
             }
