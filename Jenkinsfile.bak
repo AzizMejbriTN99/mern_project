@@ -3,7 +3,6 @@ pipeline {
 
     environment {
         DOCKERHUB_CREDENTIALS = 'dockerhub_credentials'
-        DOCKERHUB_USERNAME = 'medazizmejbri'
         BACKEND_IMAGE = "mern-backend"
         FRONTEND_IMAGE = "mern-frontend"
     }
@@ -29,8 +28,8 @@ pipeline {
         stage('Scan Images with Trivy') {
             steps {
                 script {
-                    bat "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image ${BACKEND_IMAGE}:latest"
-                    bat "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image ${FRONTEND_IMAGE}:latest"
+                    bat "trivy image ${BACKEND_IMAGE}:latest"
+                    bat "trivy image ${FRONTEND_IMAGE}:latest"
                 }
             }
         }
@@ -44,6 +43,12 @@ pipeline {
                     }
                 }
             }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline finished.'
         }
     }
 }
