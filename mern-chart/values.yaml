@@ -4,8 +4,16 @@
 
 backend:
   image: medazizmejbri/mern-backend:latest
+  service:
+    type: ClusterIP
+    port: 5000
+
 frontend:
   image: medazizmejbri/mern-frontend:latest
+  service:
+    type: NodePort
+    port: 80
+
 
 # This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
 replicaCount: 1
