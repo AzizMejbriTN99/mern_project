@@ -18,38 +18,41 @@ pipeline {
 
         stage('Build Backend Docker Image') {
             steps {
-                script {
-                    docker.build("${BACKEND_IMAGE}:latest", "./backend")
-                }
+                bat "docker build -t %BACKEND_IMAGE% ./backend"
             }
         }
 
         stage('Build Frontend Docker Image') {
             steps {
-                script {
-                    docker.build("${FRONTEND_IMAGE}:latest", "./hr-frontend")
-                }
+                bat "docker build -t %FRONTEND_IMAGE% ./hr-frontend"
             }
         }
 
         stage('Scan Images with Trivy') {
             steps {
-                script {
-                    // Windows: run Trivy via Docker
-                    bat "docker run --rm -v //var/run/docker.sock:/var/run/docker.sock aquasec/trivy image ${BACKEND_IMAGE}:latest"
-                    bat "docker run --rm -v //var/run/docker.sock:/var/run/docker.sock aquasec/trivy image ${FRONTEND_IMAGE}:latest"
-                }
+                // Using Docker image for Trivy on Windows
+                bat "docker run --rm -v //var/run/docker.sock:/var/run/docker.sock aquasec/trivy image %BACKEND_IMAGE%"
+                bat "docker run --rm -v //var/run/docker.sock:/var/run/docker.sock aquasec/trivy image %FRONTEND_IMAGE%"
             }
         }
 
         stage('Push Images to Docker Hub') {
             steps {
-                script {
-                    docker.withRegistry('https://index.docker.io/v1/', "${DOCKERHUB_CREDENTIALS}") {
-                        // tag images with your Docker Hub username
-                        docker.image("${BACKEND_IMAGE}:latest").tag("${DOCKERHUB_USERNAME}/${BACKEND_IMAGE}:latest").push()
-                        docker.image("${FRONTEND_IMAGE}:latest").tag("${DOCKERHUB_USERNAME}/${FRONTEND_IMAGE}:latest").push()
-                    }
+                withCredentials([usernamePassword(
+                    credentialsId: '%DOCKERHUB_CREDENTIALS%',
+                    usernameVariable: 'USER',
+                    passwordVariable: 'PASS'
+                )]) {
+                    // Login to Docker Hub
+                    bat "docker login -u %USER% -p %PASS%"
+
+                    // Tag images for Docker Hub (Windows-friendly format)
+                    bat "docker tag %BACKEND_IMAGE% %DOCKERHUB_USERNAME%/%BACKEND_IMAGE%:latest"
+                    bat "docker tag %FRONTEND_IMAGE% %DOCKERHUB_USERNAME%/%FRONTEND_IMAGE%:latest"
+
+                    // Push images
+                    bat "docker push %DOCKERHUB_USERNAME%/%BACKEND_IMAGE%:latest"
+                    bat "docker push %DOCKERHUB_USERNAME%/%FRONTEND_IMAGE%:latest"
                 }
             }
         }
