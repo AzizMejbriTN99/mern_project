@@ -100,7 +100,7 @@ export default function EmployeePage() {
 
     return (
         <div>
-            <h1>Employees</h1>
+            <h1>Employeeeeees</h1>
             <EntityForm
                 key={`${departments.length}-${salaries.length}`}
                 entity="Employee"
